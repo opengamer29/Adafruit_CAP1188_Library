@@ -101,22 +101,24 @@ boolean Adafruit_CAP1188::begin(uint8_t i2caddr) {
   }
 
   readRegister(CAP1188_PRODID);
-  
+
+  uint8_t prod_id = readRegister(CAP1188_PRODID);
+  uint8_t manu_id = readRegister(CAP1188_MANUID);
+  uint8_t rev = readRegister(CAP1188_REV);
+
   // Useful debugging info
   
   Serial.print("Product ID: 0x");
-  Serial.println(readRegister(CAP1188_PRODID), HEX);
+  Serial.println(prod_id, HEX);
   Serial.print("Manuf. ID: 0x");
-  Serial.println(readRegister(CAP1188_MANUID), HEX);
+  Serial.println(manu_id, HEX);
   Serial.print("Revision: 0x");
-  Serial.println(readRegister(CAP1188_REV), HEX);
-  
+  Serial.println(rev, HEX);
 
-  if ( (readRegister(CAP1188_PRODID) != 0x50) ||
-       (readRegister(CAP1188_MANUID) != 0x5D) ||
-       (readRegister(CAP1188_REV) != 0x83)) {
+  if ( (prod_id != 0x50) || (manu_id != 0x5D) || !(rev == 0x83 || rev == 0x81)) {
     return false;
   }
+  
   // allow multiple touches
   writeRegister(CAP1188_MTBLK, 0); 
   // Have LEDs follow touches
